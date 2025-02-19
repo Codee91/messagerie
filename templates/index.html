@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Sécurisé</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="sidebar">
+        <h3>Utilisateurs</h3>
+        <ul id="userList">
+            <li onclick="setRecipient('Général')">🗣 Discussion de groupe</li>
+        </ul>
+    </div>
+
+    <div id="chat">
+        <h2 id="chatTitle">Discussion de groupe</h2>
+        <div id="messages"></div>
+        
+        <!-- Nouveau conteneur pour l'input et le bouton -->
+        <div id="input-container">
+            <input type="text" id="messageInput" placeholder="Écrivez un message...">
+            <button id="sendButton" onclick="sendMessage()">Envoyer</button>
+        </div>
+    </div>
+
+    <script>
+        var socket = io.connect("http://" + document.domain + ":" + location.port);
+        var username = "{{ username }}";
+        var recipient = "Général";
+
+        socket.emit("register_user", { username: username });
+
+        function setRecipient(user) {
+            recipient = user;
+            document.getElementById("chatTitle").innerText = "Discussion avec " + recipient;
+            document.getElementById("messages").innerHTML = "";
+        }
+
+        function fetchUsers() {
+            fetch("/get_users")
+                .then(response => response.json())
+                .then(data => {
+                    let userList = document.getElementById("userList");
+                    userList.innerHTML = '<li onclick="setRecipient(\'Général\')">🗣 Discussion de groupe</li>';
+                    data.users.forEach(user => {
+                        if (user !== username) {
+                            userList.innerHTML += `<li id="user_${user}" onclick="setRecipient('${user}')">${user}</li>`;
+                        }
+                    });
+                });
+        }
+
+        fetchUsers();
+
+        socket.on("update_users", function(usersOnline) {
+            document.querySelectorAll("#userList li").forEach(li => {
+                let user = li.textContent.trim();
+                if (user !== "🗣 Discussion de groupe") {
+                    li.style.color = usersOnline.includes(user) ? "lightgreen" : "gray";
+                }
+            });
+        });
+
+        socket.on("message", function(data) {
+            if (recipient === "Général") {
+                let messagesDiv = document.getElementById("messages");
+                let newMessage = document.createElement("div");
+                newMessage.classList.add("message", "received");
+                newMessage.innerText = data;
+                messagesDiv.appendChild(newMessage);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        });
+
+        socket.on("private_message", function(data) {
+            if (data.sender === recipient || recipient === username) {
+                let messagesDiv = document.getElementById("messages");
+                let newMessage = document.createElement("div");
+                newMessage.classList.add("message", "received");
+                newMessage.innerText = data.sender + ": " + data.message;
+                messagesDiv.appendChild(newMessage);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        });
+
+        function sendMessage() {
+            let input = document.getElementById("messageInput");
+            let message = input.value;
+            if (message.trim() !== "") {
+                socket.emit("message", { recipient: recipient, message: message });
+
+                let messagesDiv = document.getElementById("messages");
+                let newMessage = document.createElement("div");
+                newMessage.classList.add("message", "sent");
+                newMessage.innerText = "Moi: " + message;
+                messagesDiv.appendChild(newMessage);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+                input.value = "";
+            }
+        }
+
+        document.getElementById("messageInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

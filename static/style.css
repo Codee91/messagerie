@@ -1,0 +1,183 @@
+/* Styles généraux */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Conteneur principal */
+#app {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+}
+
+/* Barre latérale */
+#sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #333;
+    color: white;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+#userList {
+    list-style: none;
+    padding: 0;
+}
+
+#userList li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #555;
+}
+
+#userList li:hover {
+    background: #444;
+}
+
+/* Zone de chat */
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 20px;
+    overflow: hidden;
+    height: 100%; /* Assure que le conteneur prend toute la hauteur restante */
+}
+
+/* Zone de chat proprement dite */
+#chat {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;  /* Cela lui permet de prendre toute la place restante */
+    width: 100%;   /* Cela garantit qu'il occupe toute la largeur disponible */
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;  /* Permet de défiler les messages si nécessaire */
+}
+
+
+.message {
+    flex-grow: 1;
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 10px;
+    width: 100%; /* Prendre toute la largeur possible */
+    word-wrap: break-word;
+}
+
+
+/* Conteneur pour l'input et le bouton */
+#input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacement entre l'input et le bouton */
+    margin-top: 10px;
+}
+
+/* Champ de saisie */
+#messageInput {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: auto;
+}
+
+/* Bouton envoyer */
+#sendButton {
+    padding: 8px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto;
+    margin-top: 0;
+}
+
+#sendButton:hover {
+    background-color: #218838;
+}
+
+/* Messages */
+.message {
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 10px;
+    max-width: 60%;
+    word-wrap: break-word;
+}
+
+.message.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+    text-align: right;
+    border-radius: 10px 10px 0 10px;
+}
+
+.message.received {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    align-self: flex-start;
+    text-align: left;
+    border-radius: 10px 10px 10px 0;
+}
+
+/* Messages d'erreur et de succès */
+.error {
+    color: red;
+    margin-top: 10px;
+}
+
+.success {
+    color: green;
+    margin-top: 10px;
+}
+
+/* Styles spécifiques pour register.html et login.html */
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

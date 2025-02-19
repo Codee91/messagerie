@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 import sqlite3
-from database import register_user, verify_user, get_users
+from database import register_user as db_register_user, verify_user, get_users
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
@@ -26,7 +26,7 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if register_user(username, password):
+        if db_register_user(username, password):
             return redirect(url_for("login"))
         else:
             return "Nom d'utilisateur déjà pris"
@@ -46,7 +46,7 @@ def get_users_route():
     return jsonify({"users": get_users()})
 
 @socketio.on("register_user")
-def register_user(data):
+def register_user_socket(data):
     """Enregistre l'utilisateur dans la liste des connectés"""
     username = data.get("username")
     if username:
